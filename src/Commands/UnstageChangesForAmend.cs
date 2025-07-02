@@ -48,43 +48,6 @@ namespace SourceGit.Commands
             }
         }
 
-        public bool Exec()
-        {
-            var starter = new ProcessStartInfo();
-            starter.WorkingDirectory = _repo;
-            starter.FileName = Native.OS.GitExecutable;
-            starter.Arguments = "-c core.editor=true update-index --index-info";
-            starter.UseShellExecute = false;
-            starter.CreateNoWindow = true;
-            starter.WindowStyle = ProcessWindowStyle.Hidden;
-            starter.RedirectStandardInput = true;
-            starter.RedirectStandardOutput = false;
-            starter.RedirectStandardError = true;
-
-            try
-            {
-                var proc = new Process() { StartInfo = starter };
-                proc.Start();
-                proc.StandardInput.Write(_patchBuilder.ToString());
-                proc.StandardInput.Close();
-
-                var err = proc.StandardError.ReadToEnd();
-                proc.WaitForExit();
-                var rs = proc.ExitCode == 0;
-                proc.Close();
-
-                if (!rs)
-                    App.RaiseException(_repo, err);
-
-                return rs;
-            }
-            catch (Exception e)
-            {
-                App.RaiseException(_repo, "Failed to unstage changes: " + e.Message);
-                return false;
-            }
-        }
-
         public async Task<bool> ExecAsync()
         {
             var starter = new ProcessStartInfo();

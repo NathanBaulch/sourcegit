@@ -57,18 +57,6 @@ namespace SourceGit.Commands
             return worktrees;
         }
 
-        public bool Lock(string fullpath)
-        {
-            Args = $"worktree lock \"{fullpath}\"";
-            return Exec();
-        }
-
-        public bool Unlock(string fullpath)
-        {
-            Args = $"worktree unlock \"{fullpath}\"";
-            return Exec();
-        }
-
         public async Task<List<Models.Worktree>> ListAsync()
         {
             Args = "worktree list --porcelain";
