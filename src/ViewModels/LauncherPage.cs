@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 using Avalonia.Collections;
 using Avalonia.Media;
@@ -90,15 +91,15 @@ namespace SourceGit.ViewModels
             return _popup is not { InProgress: true };
         }
 
-        public void StartPopup(Popup popup)
+        public async Task StartPopupAsync(Popup popup)
         {
             Popup = popup;
 
             if (popup.CanStartDirectly())
-                ProcessPopup();
+                await ProcessPopupAsync();
         }
 
-        public async void ProcessPopup()
+        public async Task ProcessPopupAsync()
         {
             if (_popup is { InProgress: false } dump)
             {

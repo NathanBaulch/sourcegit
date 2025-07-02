@@ -40,19 +40,19 @@ namespace SourceGit.Views
             }
         }
 
-        private void Fetch(object _, RoutedEventArgs e)
+        private async void Fetch(object _, RoutedEventArgs e)
         {
             var launcher = this.FindAncestorOfType<Launcher>();
             if (launcher is not null && DataContext is ViewModels.Repository repo)
             {
                 var startDirectly = launcher.HasKeyModifier(KeyModifiers.Control);
                 launcher.ClearKeyModifier();
-                repo.Fetch(startDirectly);
+                await repo.FetchAsync(startDirectly);
                 e.Handled = true;
             }
         }
 
-        private void Pull(object _, RoutedEventArgs e)
+        private async void Pull(object _, RoutedEventArgs e)
         {
             var launcher = this.FindAncestorOfType<Launcher>();
             if (launcher is not null && DataContext is ViewModels.Repository repo)
@@ -65,31 +65,31 @@ namespace SourceGit.Views
 
                 var startDirectly = launcher.HasKeyModifier(KeyModifiers.Control);
                 launcher.ClearKeyModifier();
-                repo.Pull(startDirectly);
+                await repo.PullAsync(startDirectly);
                 e.Handled = true;
             }
         }
 
-        private void Push(object _, RoutedEventArgs e)
+        private async void Push(object _, RoutedEventArgs e)
         {
             var launcher = this.FindAncestorOfType<Launcher>();
             if (launcher is not null && DataContext is ViewModels.Repository repo)
             {
                 var startDirectly = launcher.HasKeyModifier(KeyModifiers.Control);
                 launcher.ClearKeyModifier();
-                repo.Push(startDirectly);
+                await repo.PushAsync(startDirectly);
                 e.Handled = true;
             }
         }
 
-        private void StashAll(object _, RoutedEventArgs e)
+        private async void StashAll(object _, RoutedEventArgs e)
         {
             var launcher = this.FindAncestorOfType<Launcher>();
             if (launcher is not null && DataContext is ViewModels.Repository repo)
             {
                 var startDirectly = launcher.HasKeyModifier(KeyModifiers.Control);
                 launcher.ClearKeyModifier();
-                repo.StashAll(startDirectly);
+                await repo.StashAllAsync(startDirectly);
                 e.Handled = true;
             }
         }

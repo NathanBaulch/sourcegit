@@ -605,9 +605,11 @@ namespace SourceGit.ViewModels
                 page.Popup = popup;
         }
 
-        public void ShowAndStartPopup(Popup popup)
+        public async Task ShowAndStartPopupAsync(Popup popup)
         {
-            GetOwnerPage()?.StartPopup(popup);
+            var page = GetOwnerPage();
+            if (page != null)
+                await page.StartPopupAsync(popup);
         }
 
         public bool IsGitFlowEnabled()
@@ -748,7 +750,7 @@ namespace SourceGit.ViewModels
             return menu;
         }
 
-        public void Fetch(bool autoStart)
+        public async Task FetchAsync(bool autoStart)
         {
             if (!CanCreatePopup())
                 return;
@@ -760,12 +762,12 @@ namespace SourceGit.ViewModels
             }
 
             if (autoStart)
-                ShowAndStartPopup(new Fetch(this));
+                await ShowAndStartPopupAsync(new Fetch(this));
             else
                 ShowPopup(new Fetch(this));
         }
 
-        public void Pull(bool autoStart)
+        public async Task PullAsync(bool autoStart)
         {
             if (!CanCreatePopup())
                 return;
@@ -784,12 +786,12 @@ namespace SourceGit.ViewModels
 
             var pull = new Pull(this, null);
             if (autoStart && pull.SelectedBranch != null)
-                ShowAndStartPopup(pull);
+                await ShowAndStartPopupAsync(pull);
             else
                 ShowPopup(pull);
         }
 
-        public void Push(bool autoStart)
+        public async Task PushAsync(bool autoStart)
         {
             if (!CanCreatePopup())
                 return;
@@ -807,7 +809,7 @@ namespace SourceGit.ViewModels
             }
 
             if (autoStart)
-                ShowAndStartPopup(new Push(this, null));
+                await ShowAndStartPopupAsync(new Push(this, null));
             else
                 ShowPopup(new Push(this, null));
         }
@@ -818,7 +820,7 @@ namespace SourceGit.ViewModels
                 ShowPopup(new Apply(this));
         }
 
-        public void ExecCustomAction(Models.CustomAction action, object scope)
+        public async Task ExecCustomActionAsync(Models.CustomAction action, object scope)
         {
             if (!CanCreatePopup())
                 return;
@@ -834,15 +836,15 @@ namespace SourceGit.ViewModels
                 popup = new ExecuteCustomAction(this, action);
 
             if (action.Controls.Count == 0)
-                ShowAndStartPopup(popup);
+                await ShowAndStartPopupAsync(popup);
             else
                 ShowPopup(popup);
         }
 
-        public void Cleanup()
+        public async void Cleanup()
         {
             if (CanCreatePopup())
-                ShowAndStartPopup(new Cleanup(this));
+                await ShowAndStartPopupAsync(new Cleanup(this));
         }
 
         public void ClearFilter()
@@ -1062,9 +1064,10 @@ namespace SourceGit.ViewModels
             RefreshHistoriesFilters(refresh);
         }
 
-        public void StashAll(bool autoStart)
+        public async Task StashAllAsync(bool autoStart)
         {
-            _workingCopy?.StashAll(autoStart);
+            if (_workingCopy != null)
+                await _workingCopy.StashAllAsync(autoStart);
         }
 
         public void SkipMerge()
@@ -1363,7 +1366,7 @@ namespace SourceGit.ViewModels
             return true;
         }
 
-        public void CheckoutBranch(Models.Branch branch)
+        public async Task CheckoutBranchAsync(Models.Branch branch)
         {
             if (branch.IsLocal)
             {
@@ -1386,7 +1389,7 @@ namespace SourceGit.ViewModels
                 if (_localChangesCount > 0 || _submodules.Count > 0)
                     ShowPopup(new Checkout(this, branch.Name));
                 else
-                    ShowAndStartPopup(new Checkout(this, branch.Name));
+                    await ShowAndStartPopupAsync(new Checkout(this, branch.Name));
             }
             else
             {
@@ -1399,7 +1402,7 @@ namespace SourceGit.ViewModels
                         if (b.TrackStatus.Behind.Count > 0)
                             ShowPopup(new CheckoutAndFastForward(this, b, branch));
                         else if (!b.IsCurrent)
-                            CheckoutBranch(b);
+                            await CheckoutBranchAsync(b);
 
                         return;
                     }
@@ -1496,10 +1499,10 @@ namespace SourceGit.ViewModels
                 ShowPopup(new AddWorktree(this));
         }
 
-        public void PruneWorktrees()
+        public async void PruneWorktrees()
         {
             if (CanCreatePopup())
-                ShowAndStartPopup(new PruneWorktrees(this));
+                await ShowAndStartPopupAsync(new PruneWorktrees(this));
         }
 
         public void OpenWorktree(Models.Worktree worktree)
@@ -1623,12 +1626,12 @@ namespace SourceGit.ViewModels
                 fetch.Header = App.Text("GitLFS.Fetch");
                 fetch.Icon = App.CreateMenuIcon("Icons.Fetch");
                 fetch.IsEnabled = _remotes.Count > 0;
-                fetch.Click += (_, e) =>
+                fetch.Click += async (_, e) =>
                 {
                     if (CanCreatePopup())
                     {
                         if (_remotes.Count == 1)
-                            ShowAndStartPopup(new LFSFetch(this));
+                            await ShowAndStartPopupAsync(new LFSFetch(this));
                         else
                             ShowPopup(new LFSFetch(this));
                     }
@@ -1641,12 +1644,12 @@ namespace SourceGit.ViewModels
                 pull.Header = App.Text("GitLFS.Pull");
                 pull.Icon = App.CreateMenuIcon("Icons.Pull");
                 pull.IsEnabled = _remotes.Count > 0;
-                pull.Click += (_, e) =>
+                pull.Click += async (_, e) =>
                 {
                     if (CanCreatePopup())
                     {
                         if (_remotes.Count == 1)
-                            ShowAndStartPopup(new LFSPull(this));
+                            await ShowAndStartPopupAsync(new LFSPull(this));
                         else
                             ShowPopup(new LFSPull(this));
                     }
@@ -1659,12 +1662,12 @@ namespace SourceGit.ViewModels
                 push.Header = App.Text("GitLFS.Push");
                 push.Icon = App.CreateMenuIcon("Icons.Push");
                 push.IsEnabled = _remotes.Count > 0;
-                push.Click += (_, e) =>
+                push.Click += async (_, e) =>
                 {
                     if (CanCreatePopup())
                     {
                         if (_remotes.Count == 1)
-                            ShowAndStartPopup(new LFSPush(this));
+                            await ShowAndStartPopupAsync(new LFSPush(this));
                         else
                             ShowPopup(new LFSPush(this));
                     }
@@ -1676,10 +1679,10 @@ namespace SourceGit.ViewModels
                 var prune = new MenuItem();
                 prune.Header = App.Text("GitLFS.Prune");
                 prune.Icon = App.CreateMenuIcon("Icons.Clean");
-                prune.Click += (_, e) =>
+                prune.Click += async (_, e) =>
                 {
                     if (CanCreatePopup())
-                        ShowAndStartPopup(new LFSPrune(this));
+                        await ShowAndStartPopupAsync(new LFSPrune(this));
 
                     e.Handled = true;
                 };
@@ -1752,9 +1755,9 @@ namespace SourceGit.ViewModels
                     var item = new MenuItem();
                     item.Icon = App.CreateMenuIcon("Icons.Action");
                     item.Header = label;
-                    item.Click += (_, e) =>
+                    item.Click += async (_, e) =>
                     {
-                        ExecCustomAction(dup, null);
+                        await ExecCustomActionAsync(dup, null);
                         e.Handled = true;
                     };
 
@@ -1881,14 +1884,14 @@ namespace SourceGit.ViewModels
                         fastForward.Header = App.Text("BranchCM.FastForward", upstream);
                         fastForward.Icon = App.CreateMenuIcon("Icons.FastForward");
                         fastForward.IsEnabled = branch.TrackStatus.Ahead.Count == 0;
-                        fastForward.Click += (_, e) =>
+                        fastForward.Click += async (_, e) =>
                         {
                             var b = _branches.Find(x => x.FriendlyName == upstream);
                             if (b == null)
                                 return;
 
                             if (CanCreatePopup())
-                                ShowAndStartPopup(new Merge(this, b, branch.Name, true));
+                                await ShowAndStartPopupAsync(new Merge(this, b, branch.Name, true));
 
                             e.Handled = true;
                         };
@@ -1918,9 +1921,9 @@ namespace SourceGit.ViewModels
                     var checkout = new MenuItem();
                     checkout.Header = App.Text("BranchCM.Checkout", branch.Name);
                     checkout.Icon = App.CreateMenuIcon("Icons.Check");
-                    checkout.Click += (_, e) =>
+                    checkout.Click += async (_, e) =>
                     {
-                        CheckoutBranch(branch);
+                        await CheckoutBranchAsync(branch);
                         e.Handled = true;
                     };
                     menu.Items.Add(checkout);
@@ -1935,10 +1938,10 @@ namespace SourceGit.ViewModels
                     fastForward.Header = App.Text("BranchCM.FastForward", upstream.FriendlyName);
                     fastForward.Icon = App.CreateMenuIcon("Icons.FastForward");
                     fastForward.IsEnabled = branch.TrackStatus.Ahead.Count == 0;
-                    fastForward.Click += (_, e) =>
+                    fastForward.Click += async (_, e) =>
                     {
                         if (CanCreatePopup())
-                            ShowAndStartPopup(new ResetWithoutCheckout(this, branch, upstream));
+                            await ShowAndStartPopupAsync(new ResetWithoutCheckout(this, branch, upstream));
                         e.Handled = true;
                     };
                     menu.Items.Add(fastForward);
@@ -1947,10 +1950,10 @@ namespace SourceGit.ViewModels
                     fetchInto.Header = App.Text("BranchCM.FetchInto", upstream.FriendlyName, branch.Name);
                     fetchInto.Icon = App.CreateMenuIcon("Icons.Fetch");
                     fetchInto.IsEnabled = branch.TrackStatus.Ahead.Count == 0;
-                    fetchInto.Click += (_, e) =>
+                    fetchInto.Click += async (_, e) =>
                     {
                         if (CanCreatePopup())
-                            ShowAndStartPopup(new FetchInto(this, branch, upstream));
+                            await ShowAndStartPopupAsync(new FetchInto(this, branch, upstream));
                         e.Handled = true;
                     };
 
@@ -2175,20 +2178,20 @@ namespace SourceGit.ViewModels
             var fetch = new MenuItem();
             fetch.Header = App.Text("RemoteCM.Fetch");
             fetch.Icon = App.CreateMenuIcon("Icons.Fetch");
-            fetch.Click += (_, e) =>
+            fetch.Click += async (_, e) =>
             {
                 if (CanCreatePopup())
-                    ShowAndStartPopup(new Fetch(this, remote));
+                    await ShowAndStartPopupAsync(new Fetch(this, remote));
                 e.Handled = true;
             };
 
             var prune = new MenuItem();
             prune.Header = App.Text("RemoteCM.Prune");
             prune.Icon = App.CreateMenuIcon("Icons.Clean");
-            prune.Click += (_, e) =>
+            prune.Click += async (_, e) =>
             {
                 if (CanCreatePopup())
-                    ShowAndStartPopup(new PruneRemote(this, remote));
+                    await ShowAndStartPopupAsync(new PruneRemote(this, remote));
                 e.Handled = true;
             };
 
@@ -2239,9 +2242,9 @@ namespace SourceGit.ViewModels
             var checkout = new MenuItem();
             checkout.Header = App.Text("BranchCM.Checkout", name);
             checkout.Icon = App.CreateMenuIcon("Icons.Check");
-            checkout.Click += (_, e) =>
+            checkout.Click += async (_, e) =>
             {
-                CheckoutBranch(branch);
+                await CheckoutBranchAsync(branch);
                 e.Handled = true;
             };
             menu.Items.Add(checkout);
@@ -2441,9 +2444,9 @@ namespace SourceGit.ViewModels
                     var item = new MenuItem();
                     item.Icon = App.CreateMenuIcon("Icons.Action");
                     item.Header = label;
-                    item.Click += (_, e) =>
+                    item.Click += async (_, e) =>
                     {
-                        ExecCustomAction(dup, tag);
+                        await ExecCustomActionAsync(dup, tag);
                         e.Handled = true;
                     };
 
@@ -2876,9 +2879,9 @@ namespace SourceGit.ViewModels
                 var item = new MenuItem();
                 item.Icon = App.CreateMenuIcon("Icons.Action");
                 item.Header = label;
-                item.Click += (_, e) =>
+                item.Click += async (_, e) =>
                 {
-                    ExecCustomAction(dup, branch);
+                    await ExecCustomActionAsync(dup, branch);
                     e.Handled = true;
                 };
 

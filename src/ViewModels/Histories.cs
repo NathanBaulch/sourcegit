@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 
 using Avalonia.Controls;
 using Avalonia.Platform.Storage;
@@ -208,7 +209,7 @@ namespace SourceGit.ViewModels
             }
         }
 
-        public bool CheckoutBranchByDecorator(Models.Decorator decorator)
+        public async Task<bool> CheckoutBranchByDecoratorAsync(Models.Decorator decorator)
         {
             if (decorator == null)
                 return false;
@@ -223,7 +224,7 @@ namespace SourceGit.ViewModels
                 if (b == null)
                     return false;
 
-                _repo.CheckoutBranch(b);
+                await _repo.CheckoutBranchAsync(b);
                 return true;
             }
 
@@ -246,7 +247,7 @@ namespace SourceGit.ViewModels
                 }
                 else if (!lb.IsCurrent)
                 {
-                    _repo.CheckoutBranch(lb);
+                    await _repo.CheckoutBranchAsync(lb);
                 }
 
                 return true;
@@ -255,7 +256,7 @@ namespace SourceGit.ViewModels
             return false;
         }
 
-        public void CheckoutBranchByCommit(Models.Commit commit)
+        public async Task CheckoutBranchByCommitAsync(Models.Commit commit)
         {
             if (commit.IsCurrentHead)
                 return;
@@ -269,7 +270,7 @@ namespace SourceGit.ViewModels
                     if (b == null)
                         continue;
 
-                    _repo.CheckoutBranch(b);
+                    await _repo.CheckoutBranchAsync(b);
                     return;
                 }
                 else if (d.Type == Models.DecoratorType.RemoteBranchHead)
@@ -803,9 +804,9 @@ namespace SourceGit.ViewModels
                     var item = new MenuItem();
                     item.Icon = App.CreateMenuIcon("Icons.Action");
                     item.Header = label;
-                    item.Click += (_, e) =>
+                    item.Click += async (_, e) =>
                     {
-                        _repo.ExecCustomAction(dup, commit);
+                        await _repo.ExecCustomActionAsync(dup, commit);
                         e.Handled = true;
                     };
 
@@ -894,14 +895,14 @@ namespace SourceGit.ViewModels
                 fastForward.Header = App.Text("BranchCM.FastForward", upstream);
                 fastForward.Icon = App.CreateMenuIcon("Icons.FastForward");
                 fastForward.IsEnabled = current.TrackStatus.Ahead.Count == 0;
-                fastForward.Click += (_, e) =>
+                fastForward.Click += async (_, e) =>
                 {
                     var b = _repo.Branches.Find(x => x.FriendlyName == upstream);
                     if (b == null)
                         return;
 
                     if (_repo.CanCreatePopup())
-                        _repo.ShowAndStartPopup(new Merge(_repo, b, current.Name, true));
+                        await _repo.ShowAndStartPopupAsync(new Merge(_repo, b, current.Name, true));
 
                     e.Handled = true;
                 };
@@ -992,9 +993,9 @@ namespace SourceGit.ViewModels
                 var checkout = new MenuItem();
                 checkout.Header = App.Text("BranchCM.Checkout", branch.Name);
                 checkout.Icon = App.CreateMenuIcon("Icons.Check");
-                checkout.Click += (_, e) =>
+                checkout.Click += async (_, e) =>
                 {
-                    _repo.CheckoutBranch(branch);
+                    await _repo.CheckoutBranchAsync(branch);
                     e.Handled = true;
                 };
                 submenu.Items.Add(checkout);
@@ -1084,9 +1085,9 @@ namespace SourceGit.ViewModels
             var checkout = new MenuItem();
             checkout.Header = App.Text("BranchCM.Checkout", name);
             checkout.Icon = App.CreateMenuIcon("Icons.Check");
-            checkout.Click += (_, e) =>
+            checkout.Click += async (_, e) =>
             {
-                _repo.CheckoutBranch(branch);
+                await _repo.CheckoutBranchAsync(branch);
                 e.Handled = true;
             };
             submenu.Items.Add(checkout);

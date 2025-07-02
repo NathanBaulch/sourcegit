@@ -253,7 +253,7 @@ namespace SourceGit.Views
             }
         }
 
-        private void OnCommitListDoubleTapped(object sender, TappedEventArgs e)
+        private async void OnCommitListDoubleTapped(object sender, TappedEventArgs e)
         {
             e.Handled = true;
 
@@ -265,12 +265,12 @@ namespace SourceGit.Views
                 if (e.Source is CommitRefsPresenter crp)
                 {
                     var decorator = crp.DecoratorAt(e.GetPosition(crp));
-                    if (histories.CheckoutBranchByDecorator(decorator))
+                    if (await histories.CheckoutBranchByDecoratorAsync(decorator))
                         return;
                 }
 
                 if (e.Source is Control { DataContext: Models.Commit c })
-                    histories.CheckoutBranchByCommit(c);
+                    await histories.CheckoutBranchByCommitAsync(c);
             }
         }
 

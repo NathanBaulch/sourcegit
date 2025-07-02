@@ -326,10 +326,10 @@ namespace SourceGit.ViewModels
             });
         }
 
-        public void OpenExternalMergeToolAllConflicts()
+        public async void OpenExternalMergeToolAllConflicts()
         {
             // No <file> arg, mergetool runs on all files with merge conflicts!
-            UseExternalMergeTool(null);
+            await UseExternalMergeToolAsync(null);
         }
 
         public void OpenAssumeUnchanged()
@@ -337,35 +337,35 @@ namespace SourceGit.ViewModels
             App.ShowWindow(new AssumeUnchangedManager(_repo), true);
         }
 
-        public void StashAll(bool autoStart)
+        public async Task StashAllAsync(bool autoStart)
         {
             if (!_repo.CanCreatePopup())
                 return;
 
             if (autoStart)
-                _repo.ShowAndStartPopup(new StashChanges(_repo, _cached, false));
+                await _repo.ShowAndStartPopupAsync(new StashChanges(_repo, _cached, false));
             else
                 _repo.ShowPopup(new StashChanges(_repo, _cached, false));
         }
 
-        public void StageSelected(Models.Change next)
+        public async Task StageSelectedAsync(Models.Change next)
         {
-            StageChanges(_selectedUnstaged, next);
+            await StageChangesAsync(_selectedUnstaged, next);
         }
 
-        public void StageAll()
+        public async void StageAll()
         {
-            StageChanges(_visibleUnstaged, null);
+            await StageChangesAsync(_visibleUnstaged, null);
         }
 
-        public void UnstageSelected(Models.Change next)
+        public async Task UnstageSelectedAsync(Models.Change next)
         {
-            UnstageChanges(_selectedStaged, next);
+            await UnstageChangesAsync(_selectedStaged, next);
         }
 
-        public void UnstageAll()
+        public async void UnstageAll()
         {
-            UnstageChanges(_visibleStaged, null);
+            await UnstageChangesAsync(_visibleStaged, null);
         }
 
         public void Discard(List<Models.Change> changes)
@@ -379,7 +379,7 @@ namespace SourceGit.ViewModels
             Filter = string.Empty;
         }
 
-        public async void UseTheirs(List<Models.Change> changes)
+        public async Task UseTheirsAsync(List<Models.Change> changes)
         {
             _repo.SetWatcherEnabled(false);
 
@@ -428,7 +428,7 @@ namespace SourceGit.ViewModels
             _repo.SetWatcherEnabled(true);
         }
 
-        public async void UseMine(List<Models.Change> changes)
+        public async Task UseMineAsync(List<Models.Change> changes)
         {
             _repo.SetWatcherEnabled(false);
 
@@ -477,7 +477,7 @@ namespace SourceGit.ViewModels
             _repo.SetWatcherEnabled(true);
         }
 
-        public async void UseExternalMergeTool(Models.Change change)
+        public async Task UseExternalMergeToolAsync(Models.Change change)
         {
             var toolType = Preferences.Instance.ExternalMergeToolType;
             var toolPath = Preferences.Instance.ExternalMergeToolPath;
@@ -626,27 +626,27 @@ namespace SourceGit.ViewModels
                     var useTheirs = new MenuItem();
                     useTheirs.Icon = App.CreateMenuIcon("Icons.Incoming");
                     useTheirs.Header = App.Text("FileCM.UseTheirs");
-                    useTheirs.Click += (_, e) =>
+                    useTheirs.Click += async (_, e) =>
                     {
-                        UseTheirs(_selectedUnstaged);
+                        await UseTheirsAsync(_selectedUnstaged);
                         e.Handled = true;
                     };
 
                     var useMine = new MenuItem();
                     useMine.Icon = App.CreateMenuIcon("Icons.Local");
                     useMine.Header = App.Text("FileCM.UseMine");
-                    useMine.Click += (_, e) =>
+                    useMine.Click += async (_, e) =>
                     {
-                        UseMine(_selectedUnstaged);
+                        await UseMineAsync(_selectedUnstaged);
                         e.Handled = true;
                     };
 
                     var openMerger = new MenuItem();
                     openMerger.Icon = App.CreateMenuIcon("Icons.OpenWith");
                     openMerger.Header = App.Text("FileCM.OpenWithExternalMerger");
-                    openMerger.Click += (_, e) =>
+                    openMerger.Click += async (_, e) =>
                     {
-                        UseExternalMergeTool(change);
+                        await UseExternalMergeToolAsync(change);
                         e.Handled = true;
                     };
 
@@ -682,9 +682,9 @@ namespace SourceGit.ViewModels
                     var stage = new MenuItem();
                     stage.Header = App.Text("FileCM.Stage");
                     stage.Icon = App.CreateMenuIcon("Icons.File.Add");
-                    stage.Click += (_, e) =>
+                    stage.Click += async (_, e) =>
                     {
-                        StageChanges(_selectedUnstaged, null);
+                        await StageChangesAsync(_selectedUnstaged, null);
                         e.Handled = true;
                     };
 
@@ -1024,18 +1024,18 @@ namespace SourceGit.ViewModels
                     var useTheirs = new MenuItem();
                     useTheirs.Icon = App.CreateMenuIcon("Icons.Incoming");
                     useTheirs.Header = App.Text("FileCM.UseTheirs");
-                    useTheirs.Click += (_, e) =>
+                    useTheirs.Click += async (_, e) =>
                     {
-                        UseTheirs(_selectedUnstaged);
+                        await UseTheirsAsync(_selectedUnstaged);
                         e.Handled = true;
                     };
 
                     var useMine = new MenuItem();
                     useMine.Icon = App.CreateMenuIcon("Icons.Local");
                     useMine.Header = App.Text("FileCM.UseMine");
-                    useMine.Click += (_, e) =>
+                    useMine.Click += async (_, e) =>
                     {
-                        UseMine(_selectedUnstaged);
+                        await UseMineAsync(_selectedUnstaged);
                         e.Handled = true;
                     };
 
@@ -1084,9 +1084,9 @@ namespace SourceGit.ViewModels
                 var stage = new MenuItem();
                 stage.Header = App.Text("FileCM.StageMulti", _selectedUnstaged.Count);
                 stage.Icon = App.CreateMenuIcon("Icons.File.Add");
-                stage.Click += (_, e) =>
+                stage.Click += async (_, e) =>
                 {
-                    StageChanges(_selectedUnstaged, null);
+                    await StageChangesAsync(_selectedUnstaged, null);
                     e.Handled = true;
                 };
 
@@ -1268,9 +1268,9 @@ namespace SourceGit.ViewModels
                 var unstage = new MenuItem();
                 unstage.Header = App.Text("FileCM.Unstage");
                 unstage.Icon = App.CreateMenuIcon("Icons.File.Remove");
-                unstage.Click += (_, e) =>
+                unstage.Click += async (_, e) =>
                 {
-                    UnstageChanges(_selectedStaged, null);
+                    await UnstageChangesAsync(_selectedStaged, null);
                     e.Handled = true;
                 };
 
@@ -1471,9 +1471,9 @@ namespace SourceGit.ViewModels
                 var unstage = new MenuItem();
                 unstage.Header = App.Text("FileCM.UnstageMulti", _selectedStaged.Count);
                 unstage.Icon = App.CreateMenuIcon("Icons.File.Remove");
-                unstage.Click += (_, e) =>
+                unstage.Click += async (_, e) =>
                 {
-                    UnstageChanges(_selectedStaged, null);
+                    await UnstageChangesAsync(_selectedStaged, null);
                     e.Handled = true;
                 };
 
@@ -1776,7 +1776,7 @@ namespace SourceGit.ViewModels
             }
         }
 
-        private async void StageChanges(List<Models.Change> changes, Models.Change next)
+        private async Task StageChangesAsync(List<Models.Change> changes, Models.Change next)
         {
             var count = changes.Count;
             if (count == 0)
@@ -1812,7 +1812,7 @@ namespace SourceGit.ViewModels
             IsStaging = false;
         }
 
-        private async void UnstageChanges(List<Models.Change> changes, Models.Change next)
+        private async Task UnstageChangesAsync(List<Models.Change> changes, Models.Change next)
         {
             var count = changes.Count;
             if (count == 0)
@@ -1917,7 +1917,7 @@ namespace SourceGit.ViewModels
 
                 log.Complete();
 
-                Dispatcher.UIThread.Post(() =>
+                Dispatcher.UIThread.Post(async () =>
                 {
                     if (succ)
                     {
@@ -1928,13 +1928,13 @@ namespace SourceGit.ViewModels
                         {
                             if (_repo.CurrentBranch == null)
                             {
-                                var currentBranchName = Commands.Branch.ShowCurrent(_repo.FullPath);
+                                var currentBranchName = await Commands.Branch.ShowCurrentAsync(_repo.FullPath);
                                 var tmp = new Models.Branch() { Name = currentBranchName };
-                                _repo.ShowAndStartPopup(new Push(_repo, tmp));
+                                await _repo.ShowAndStartPopupAsync(new Push(_repo, tmp));
                             }
                             else
                             {
-                                _repo.ShowAndStartPopup(new Push(_repo, null));
+                                await _repo.ShowAndStartPopupAsync(new Push(_repo, null));
                             }
                         }
                     }

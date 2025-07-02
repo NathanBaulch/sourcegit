@@ -523,7 +523,7 @@ namespace SourceGit.Views
             e.Handled = true;
         }
 
-        private void OnDoubleTappedBranchNode(object sender, TappedEventArgs _)
+        private async void OnDoubleTappedBranchNode(object sender, TappedEventArgs _)
         {
             if (sender is Grid { DataContext: ViewModels.BranchTreeNode node })
             {
@@ -533,7 +533,7 @@ namespace SourceGit.Views
                         return;
 
                     if (DataContext is ViewModels.Repository { Settings: not null } repo)
-                        repo.CheckoutBranch(branch);
+                        await repo.CheckoutBranchAsync(branch);
                 }
                 else
                 {

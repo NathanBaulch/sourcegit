@@ -25,7 +25,7 @@ namespace SourceGit.Models
                     PipeTransmissionMode.Byte,
                     PipeOptions.Asynchronous | PipeOptions.CurrentUserOnly);
                 _cancellationTokenSource = new CancellationTokenSource();
-                Task.Run(StartServer);
+                Task.Run(StartServerAsync);
             }
             catch
             {
@@ -67,7 +67,7 @@ namespace SourceGit.Models
             _singletonLock?.Dispose();
         }
 
-        private async void StartServer()
+        private async Task StartServerAsync()
         {
             using var reader = new StreamReader(_server);
 

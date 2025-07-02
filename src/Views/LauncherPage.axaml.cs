@@ -13,10 +13,10 @@ namespace SourceGit.Views
             InitializeComponent();
         }
 
-        private void OnPopupSure(object _, RoutedEventArgs e)
+        private async void OnPopupSure(object _, RoutedEventArgs e)
         {
             if (DataContext is ViewModels.LauncherPage page)
-                page.ProcessPopup();
+                await page.ProcessPopupAsync();
 
             e.Handled = true;
         }

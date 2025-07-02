@@ -56,36 +56,36 @@ namespace SourceGit.Views
             }
         }
 
-        private void OnUnstagedChangeDoubleTapped(object _, RoutedEventArgs e)
+        private async void OnUnstagedChangeDoubleTapped(object _, RoutedEventArgs e)
         {
             if (DataContext is ViewModels.WorkingCopy vm)
             {
                 var next = UnstagedChangesView.GetNextChangeWithoutSelection();
-                vm.StageSelected(next);
+                await vm.StageSelectedAsync(next);
                 UnstagedChangesView.TakeFocus();
                 e.Handled = true;
             }
         }
 
-        private void OnStagedChangeDoubleTapped(object _, RoutedEventArgs e)
+        private async void OnStagedChangeDoubleTapped(object _, RoutedEventArgs e)
         {
             if (DataContext is ViewModels.WorkingCopy vm)
             {
                 var next = StagedChangesView.GetNextChangeWithoutSelection();
-                vm.UnstageSelected(next);
+                await vm.UnstageSelectedAsync(next);
                 StagedChangesView.TakeFocus();
                 e.Handled = true;
             }
         }
 
-        private void OnUnstagedKeyDown(object _, KeyEventArgs e)
+        private async void OnUnstagedKeyDown(object _, KeyEventArgs e)
         {
             if (DataContext is ViewModels.WorkingCopy vm)
             {
                 if (e.Key is Key.Space or Key.Enter)
                 {
                     var next = UnstagedChangesView.GetNextChangeWithoutSelection();
-                    vm.StageSelected(next);
+                    await vm.StageSelectedAsync(next);
                     UnstagedChangesView.TakeFocus();
                     e.Handled = true;
                     return;
@@ -99,35 +99,35 @@ namespace SourceGit.Views
             }
         }
 
-        private void OnStagedKeyDown(object _, KeyEventArgs e)
+        private async void OnStagedKeyDown(object _, KeyEventArgs e)
         {
             if (DataContext is ViewModels.WorkingCopy vm && e.Key is Key.Space or Key.Enter)
             {
                 var next = StagedChangesView.GetNextChangeWithoutSelection();
-                vm.UnstageSelected(next);
+                await vm.UnstageSelectedAsync(next);
                 StagedChangesView.TakeFocus();
                 e.Handled = true;
             }
         }
 
-        private void OnStageSelectedButtonClicked(object _, RoutedEventArgs e)
+        private async void OnStageSelectedButtonClicked(object _, RoutedEventArgs e)
         {
             if (DataContext is ViewModels.WorkingCopy vm)
             {
                 var next = UnstagedChangesView.GetNextChangeWithoutSelection();
-                vm.StageSelected(next);
+                await vm.StageSelectedAsync(next);
                 UnstagedChangesView.TakeFocus();
             }
 
             e.Handled = true;
         }
 
-        private void OnUnstageSelectedButtonClicked(object _, RoutedEventArgs e)
+        private async void OnUnstageSelectedButtonClicked(object _, RoutedEventArgs e)
         {
             if (DataContext is ViewModels.WorkingCopy vm)
             {
                 var next = StagedChangesView.GetNextChangeWithoutSelection();
-                vm.UnstageSelected(next);
+                await vm.UnstageSelectedAsync(next);
                 StagedChangesView.TakeFocus();
             }
 

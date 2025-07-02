@@ -104,19 +104,19 @@ namespace SourceGit.ViewModels
             }
         }
 
-        public void UseTheirs()
+        public async void UseTheirs()
         {
-            _wc.UseTheirs([_change]);
+            await _wc.UseTheirsAsync([_change]);
         }
 
-        public void UseMine()
+        public async void UseMine()
         {
-            _wc.UseMine([_change]);
+            await _wc.UseMineAsync([_change]);
         }
 
-        public void OpenExternalMergeTool()
+        public async void OpenExternalMergeTool()
         {
-            _wc.UseExternalMergeTool(_change);
+            await _wc.UseExternalMergeToolAsync(_change);
         }
 
         private WorkingCopy _wc = null;
