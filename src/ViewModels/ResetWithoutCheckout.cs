@@ -40,7 +40,7 @@ namespace SourceGit.ViewModels
 
             var succ = await Commands.Branch.CreateAsync(_repo.FullPath, Target.Name, _revision, true, log);
             log.Complete();
-            await CallUIThreadAsync(() => _repo.SetWatcherEnabled(true));
+            _repo.SetWatcherEnabled(true);
             return succ;
         }
 

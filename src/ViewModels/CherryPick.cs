@@ -92,7 +92,7 @@ namespace SourceGit.ViewModels
             }
 
             log.Complete();
-            await CallUIThreadAsync(() => _repo.SetWatcherEnabled(true));
+            _repo.SetWatcherEnabled(true);
             return true;
         }
 

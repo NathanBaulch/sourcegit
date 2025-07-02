@@ -38,7 +38,7 @@ namespace SourceGit.ViewModels
 
             var succ = await new Commands.Reset(_repo.FullPath, To.SHA, SelectedMode.Arg).Use(log).ExecAsync();
             log.Complete();
-            await CallUIThreadAsync(() => _repo.SetWatcherEnabled(true));
+            _repo.SetWatcherEnabled(true);
             return succ;
         }
 

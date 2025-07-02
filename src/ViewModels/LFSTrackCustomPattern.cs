@@ -33,7 +33,7 @@ namespace SourceGit.ViewModels
 
             var succ = await new Commands.LFS(_repo.FullPath).TrackAsync(_pattern, IsFilename, log);
             log.Complete();
-            await CallUIThreadAsync(() => _repo.SetWatcherEnabled(true));
+            _repo.SetWatcherEnabled(true);
             return succ;
         }
 

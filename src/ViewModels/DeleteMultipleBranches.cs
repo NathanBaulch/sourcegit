@@ -38,11 +38,8 @@ namespace SourceGit.ViewModels
 
             log.Complete();
 
-            await CallUIThreadAsync(() =>
-            {
-                _repo.MarkBranchesDirtyManually();
-                _repo.SetWatcherEnabled(true);
-            });
+            _repo.MarkBranchesDirtyManually();
+            _repo.SetWatcherEnabled(true);
 
             return true;
         }

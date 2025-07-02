@@ -125,7 +125,7 @@ namespace SourceGit.ViewModels
 
             await new Commands.Config(_repo.FullPath).SetAsync($"remote.{_name}.sshkey", _useSSH ? SSHKey : null);
 
-            await CallUIThreadAsync(() => _repo.SetWatcherEnabled(true));
+            _repo.SetWatcherEnabled(true);
             return true;
         }
 

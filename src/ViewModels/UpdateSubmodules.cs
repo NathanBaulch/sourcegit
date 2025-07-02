@@ -68,7 +68,7 @@ namespace SourceGit.ViewModels
                 .UpdateAsync(targets, EnableInit, EnableRecursive, EnableRemote);
 
             log.Complete();
-            await CallUIThreadAsync(() => _repo.SetWatcherEnabled(true));
+            _repo.SetWatcherEnabled(true);
             return true;
         }
 

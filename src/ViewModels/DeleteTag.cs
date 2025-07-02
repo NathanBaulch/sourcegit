@@ -40,11 +40,8 @@ namespace SourceGit.ViewModels
 
             log.Complete();
 
-            await CallUIThreadAsync(() =>
-            {
-                _repo.MarkTagsDirtyManually();
-                _repo.SetWatcherEnabled(true);
-            });
+            _repo.MarkTagsDirtyManually();
+            _repo.SetWatcherEnabled(true);
             return succ;
         }
 

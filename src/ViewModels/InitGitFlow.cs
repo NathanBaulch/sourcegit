@@ -118,7 +118,7 @@ namespace SourceGit.ViewModels
                 if (!succ)
                 {
                     log.Complete();
-                    await CallUIThreadAsync(() => _repo.SetWatcherEnabled(true));
+                    _repo.SetWatcherEnabled(true);
                     return false;
                 }
             }
@@ -130,7 +130,7 @@ namespace SourceGit.ViewModels
                 if (!succ)
                 {
                     log.Complete();
-                    await CallUIThreadAsync(() => _repo.SetWatcherEnabled(true));
+                    _repo.SetWatcherEnabled(true);
                     return false;
                 }
             }
@@ -147,21 +147,18 @@ namespace SourceGit.ViewModels
 
             log.Complete();
 
-            await CallUIThreadAsync(() =>
+            if (succ)
             {
-                if (succ)
-                {
-                    var gitflow = new Models.GitFlow();
-                    gitflow.Master = _master;
-                    gitflow.Develop = _develop;
-                    gitflow.FeaturePrefix = _featurePrefix;
-                    gitflow.ReleasePrefix = _releasePrefix;
-                    gitflow.HotfixPrefix = _hotfixPrefix;
-                    _repo.GitFlow = gitflow;
-                }
+                var gitflow = new Models.GitFlow();
+                gitflow.Master = _master;
+                gitflow.Develop = _develop;
+                gitflow.FeaturePrefix = _featurePrefix;
+                gitflow.ReleasePrefix = _releasePrefix;
+                gitflow.HotfixPrefix = _hotfixPrefix;
+                _repo.GitFlow = gitflow;
+            }
 
-                _repo.SetWatcherEnabled(true);
-            });
+            _repo.SetWatcherEnabled(true);
 
             return succ;
         }

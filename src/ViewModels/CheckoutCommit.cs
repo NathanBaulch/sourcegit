@@ -47,7 +47,7 @@ namespace SourceGit.ViewModels
 
             if (!_repo.ConfirmCheckoutBranch())
             {
-                await CallUIThreadAsync(() => _repo.SetWatcherEnabled(true));
+                _repo.SetWatcherEnabled(true);
                 return true;
             }
 
@@ -64,7 +64,7 @@ namespace SourceGit.ViewModels
                     if (!succ)
                     {
                         log.Complete();
-                        await CallUIThreadAsync(() => _repo.SetWatcherEnabled(true));
+                        _repo.SetWatcherEnabled(true);
                         return false;
                     }
 
@@ -88,7 +88,7 @@ namespace SourceGit.ViewModels
             }
 
             log.Complete();
-            await CallUIThreadAsync(() => _repo.SetWatcherEnabled(true));
+            _repo.SetWatcherEnabled(true);
             return succ;
         }
 

@@ -96,11 +96,8 @@ namespace SourceGit.ViewModels
                 succ = await new Commands.Stash(_repo.FullPath).Use(log).ApplyAsync("stash@{0}", true);
 
             log.Complete();
-            await CallUIThreadAsync(() =>
-            {
-                _repo.MarkWorkingCopyDirtyManually();
-                _repo.SetWatcherEnabled(true);
-            });
+            _repo.MarkWorkingCopyDirtyManually();
+            _repo.SetWatcherEnabled(true);
 
             return succ;
         }

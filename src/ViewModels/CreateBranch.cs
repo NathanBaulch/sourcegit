@@ -131,7 +131,7 @@ namespace SourceGit.ViewModels
 
             if (CheckoutAfterCreated && !_repo.ConfirmCheckoutBranch())
             {
-                await CallUIThreadAsync(() => _repo.SetWatcherEnabled(true));
+                _repo.SetWatcherEnabled(true);
                 return true;
             }
 
@@ -151,7 +151,7 @@ namespace SourceGit.ViewModels
                         if (!succ)
                         {
                             log.Complete();
-                            await CallUIThreadAsync(() => _repo.SetWatcherEnabled(true));
+                            _repo.SetWatcherEnabled(true);
                             return false;
                         }
 
@@ -181,27 +181,24 @@ namespace SourceGit.ViewModels
 
             log.Complete();
 
-            await CallUIThreadAsync(() =>
+            if (succ && CheckoutAfterCreated)
             {
-                if (succ && CheckoutAfterCreated)
-                {
-                    var fake = new Models.Branch() { IsLocal = true, FullName = $"refs/heads/{fixedName}" };
-                    if (BasedOn is Models.Branch based && !based.IsLocal)
-                        fake.Upstream = based.FullName;
+                var fake = new Models.Branch() { IsLocal = true, FullName = $"refs/heads/{fixedName}" };
+                if (BasedOn is Models.Branch based && !based.IsLocal)
+                    fake.Upstream = based.FullName;
 
-                    var folderEndIdx = fake.FullName.LastIndexOf('/');
-                    if (folderEndIdx > 10)
-                        _repo.Settings.ExpandedBranchNodesInSideBar.Add(fake.FullName.Substring(0, folderEndIdx));
+                var folderEndIdx = fake.FullName.LastIndexOf('/');
+                if (folderEndIdx > 10)
+                    _repo.Settings.ExpandedBranchNodesInSideBar.Add(fake.FullName.Substring(0, folderEndIdx));
 
-                    if (_repo.HistoriesFilterMode == Models.FilterMode.Included)
-                        _repo.SetBranchFilterMode(fake, Models.FilterMode.Included, true, false);
+                if (_repo.HistoriesFilterMode == Models.FilterMode.Included)
+                    _repo.SetBranchFilterMode(fake, Models.FilterMode.Included, true, false);
 
-                    ProgressDescription = "Waiting for branch updated...";
-                }
+                ProgressDescription = "Waiting for branch updated...";
+            }
 
-                _repo.MarkBranchesDirtyManually();
-                _repo.SetWatcherEnabled(true);
-            });
+            _repo.MarkBranchesDirtyManually();
+            _repo.SetWatcherEnabled(true);
 
             if (CheckoutAfterCreated)
                 Task.Delay(400).Wait();

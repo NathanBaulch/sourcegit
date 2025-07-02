@@ -54,7 +54,7 @@ namespace SourceGit.ViewModels
                 Strategy.Arg).Use(log).ExecAsync();
 
             log.Complete();
-            await CallUIThreadAsync(() => _repo.SetWatcherEnabled(true));
+            _repo.SetWatcherEnabled(true);
             return true;
         }
 

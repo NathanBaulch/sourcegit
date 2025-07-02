@@ -55,12 +55,9 @@ namespace SourceGit.ViewModels
             var succ = await new Commands.Archive(_repo.FullPath, _revision, _saveFile).Use(log).ExecAsync();
             log.Complete();
 
-            await CallUIThreadAsync(() =>
-            {
-                _repo.SetWatcherEnabled(true);
-                if (succ)
-                    App.SendNotification(_repo.FullPath, $"Save archive to : {_saveFile}");
-            });
+            _repo.SetWatcherEnabled(true);
+            if (succ)
+                App.SendNotification(_repo.FullPath, $"Save archive to : {_saveFile}");
 
             return succ;
         }

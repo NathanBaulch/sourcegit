@@ -80,14 +80,11 @@ namespace SourceGit.ViewModels
             if (!string.IsNullOrEmpty(upstream))
                 upstreamHead = await new Commands.QueryRevisionByRefName(_repo.FullPath, upstream.Substring(13)).ResultAsync();
 
-            await CallUIThreadAsync(() =>
-            {
-                if (!string.IsNullOrEmpty(upstreamHead))
-                    _repo.NavigateToCommit(upstreamHead, true);
+            if (!string.IsNullOrEmpty(upstreamHead))
+                _repo.NavigateToCommit(upstreamHead, true);
 
-                _repo.MarkFetched();
-                _repo.SetWatcherEnabled(true);
-            });
+            _repo.MarkFetched();
+            _repo.SetWatcherEnabled(true);
 
             return true;
         }

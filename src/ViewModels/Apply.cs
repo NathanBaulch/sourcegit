@@ -50,7 +50,7 @@ namespace SourceGit.ViewModels
             var succ = await new Commands.Apply(_repo.FullPath, _patchFile, _ignoreWhiteSpace, SelectedWhiteSpaceMode.Arg, null).Use(log).ExecAsync();
             log.Complete();
 
-            await CallUIThreadAsync(() => _repo.SetWatcherEnabled(true));
+            _repo.SetWatcherEnabled(true);
             return succ;
         }
 

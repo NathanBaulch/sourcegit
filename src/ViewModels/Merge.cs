@@ -70,11 +70,8 @@ namespace SourceGit.ViewModels
             log.Complete();
 
             var head = await new Commands.QueryRevisionByRefName(_repo.FullPath, "HEAD").ResultAsync();
-            await CallUIThreadAsync(() =>
-            {
-                _repo.NavigateToCommit(head, true);
-                _repo.SetWatcherEnabled(true);
-            });
+            _repo.NavigateToCommit(head, true);
+            _repo.SetWatcherEnabled(true);
             return true;
         }
 

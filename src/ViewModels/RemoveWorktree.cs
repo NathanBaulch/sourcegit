@@ -31,7 +31,7 @@ namespace SourceGit.ViewModels
 
             var succ = await new Commands.Worktree(_repo.FullPath).Use(log).RemoveAsync(Target.FullPath, Force);
             log.Complete();
-            await CallUIThreadAsync(() => _repo.SetWatcherEnabled(true));
+            _repo.SetWatcherEnabled(true);
             return succ;
         }
 

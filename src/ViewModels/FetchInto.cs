@@ -33,11 +33,8 @@ namespace SourceGit.ViewModels
             log.Complete();
 
             var changedLocalBranchHead = await new Commands.QueryRevisionByRefName(_repo.FullPath, Local.Name).ResultAsync();
-            await CallUIThreadAsync(() =>
-            {
-                _repo.NavigateToCommit(changedLocalBranchHead, true);
-                _repo.SetWatcherEnabled(true);
-            });
+            _repo.NavigateToCommit(changedLocalBranchHead, true);
+            _repo.SetWatcherEnabled(true);
 
             return true;
         }

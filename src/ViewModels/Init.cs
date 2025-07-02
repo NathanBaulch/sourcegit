@@ -36,11 +36,8 @@ namespace SourceGit.ViewModels
 
             if (succ)
             {
-                await CallUIThreadAsync(() =>
-                {
-                    Preferences.Instance.FindOrAddNodeByRepositoryPath(_targetPath, _parentNode, true);
-                    Welcome.Instance.Refresh();
-                });
+                Preferences.Instance.FindOrAddNodeByRepositoryPath(_targetPath, _parentNode, true);
+                Welcome.Instance.Refresh();
             }
 
             return succ;

@@ -169,12 +169,12 @@ namespace SourceGit.ViewModels
             log.AppendLine($"$ {CustomAction.Executable} {cmdline}\n");
 
             if (CustomAction.WaitForExit)
-                RunAndWait(cmdline, log);
+                await RunAndWaitAsync(cmdline, log);
             else
                 Run(cmdline);
 
             log.Complete();
-            await CallUIThreadAsync(() => _repo.SetWatcherEnabled(true));
+            _repo.SetWatcherEnabled(true);
             return true;
         }
 
@@ -238,7 +238,7 @@ namespace SourceGit.ViewModels
             }
         }
 
-        private void RunAndWait(string args, Models.ICommandLog log)
+        private async Task RunAndWaitAsync(string args, Models.ICommandLog log)
         {
             var start = new ProcessStartInfo();
             start.FileName = CustomAction.Executable;
@@ -274,7 +274,7 @@ namespace SourceGit.ViewModels
                 proc.Start();
                 proc.BeginOutputReadLine();
                 proc.BeginErrorReadLine();
-                proc.WaitForExit();
+                await proc.WaitForExitAsync();
 
                 var exitCode = proc.ExitCode;
                 if (exitCode != 0)

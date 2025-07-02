@@ -25,7 +25,7 @@ namespace SourceGit.ViewModels
 
             var succ = await new Commands.Remote(_repo.FullPath).Use(log).PruneAsync(Remote.Name);
             log.Complete();
-            await CallUIThreadAsync(() => _repo.SetWatcherEnabled(true));
+            _repo.SetWatcherEnabled(true);
             return succ;
         }
 

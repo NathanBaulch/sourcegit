@@ -42,7 +42,7 @@ namespace SourceGit.ViewModels
                 if (!succ)
                 {
                     log.Complete();
-                    await CallUIThreadAsync(() => _repo.SetWatcherEnabled(true));
+                    _repo.SetWatcherEnabled(true);
                     return false;
                 }
 
@@ -57,7 +57,7 @@ namespace SourceGit.ViewModels
                 await new Commands.Stash(_repo.FullPath).Use(log).PopAsync("stash@{0}");
 
             log.Complete();
-            await CallUIThreadAsync(() => _repo.SetWatcherEnabled(true));
+            _repo.SetWatcherEnabled(true);
             return succ;
         }
 

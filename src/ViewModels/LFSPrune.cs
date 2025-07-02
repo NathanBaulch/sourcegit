@@ -19,7 +19,7 @@ namespace SourceGit.ViewModels
 
             await new Commands.LFS(_repo.FullPath).PruneAsync(log);
             log.Complete();
-            await CallUIThreadAsync(() => _repo.SetWatcherEnabled(true));
+            _repo.SetWatcherEnabled(true);
             return true;
         }
 

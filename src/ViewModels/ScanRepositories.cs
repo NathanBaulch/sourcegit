@@ -5,8 +5,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 
-using Avalonia.Threading;
-
 namespace SourceGit.ViewModels
 {
     public class ScanRepositories : Popup
@@ -59,32 +57,29 @@ namespace SourceGit.ViewModels
             var remain = 500 - (int)watch.Elapsed.TotalMilliseconds;
             watch.Stop();
             if (remain > 0)
-                Task.Delay(remain).Wait();
+                await Task.Delay(remain);
 
-            await Dispatcher.UIThread.InvokeAsync(() =>
+            var normalizedRoot = rootDir.FullName.Replace('\\', '/').TrimEnd('/');
+
+            foreach (var f in found)
             {
-                var normalizedRoot = rootDir.FullName.Replace('\\', '/').TrimEnd('/');
-
-                foreach (var f in found)
+                var parent = new DirectoryInfo(f).Parent!.FullName.Replace('\\', '/').TrimEnd('/');
+                if (parent.Equals(normalizedRoot, StringComparison.Ordinal))
                 {
-                    var parent = new DirectoryInfo(f).Parent!.FullName.Replace('\\', '/').TrimEnd('/');
-                    if (parent.Equals(normalizedRoot, StringComparison.Ordinal))
-                    {
-                        Preferences.Instance.FindOrAddNodeByRepositoryPath(f, null, false, false);
-                    }
-                    else if (parent.StartsWith(normalizedRoot, StringComparison.Ordinal))
-                    {
-                        var relative = parent.Substring(normalizedRoot.Length).TrimStart('/');
-                        var group = FindOrCreateGroupRecursive(Preferences.Instance.RepositoryNodes, relative);
-                        Preferences.Instance.FindOrAddNodeByRepositoryPath(f, group, false, false);
-                    }
+                    Preferences.Instance.FindOrAddNodeByRepositoryPath(f, null, false, false);
                 }
+                else if (parent.StartsWith(normalizedRoot, StringComparison.Ordinal))
+                {
+                    var relative = parent.Substring(normalizedRoot.Length).TrimStart('/');
+                    var group = FindOrCreateGroupRecursive(Preferences.Instance.RepositoryNodes, relative);
+                    Preferences.Instance.FindOrAddNodeByRepositoryPath(f, group, false, false);
+                }
+            }
 
-                Preferences.Instance.AutoRemoveInvalidNode();
-                Preferences.Instance.Save();
+            Preferences.Instance.AutoRemoveInvalidNode();
+            Preferences.Instance.Save();
 
-                Welcome.Instance.Refresh();
-            });
+            Welcome.Instance.Refresh();
 
             return true;
         }
@@ -109,7 +104,7 @@ namespace SourceGit.ViewModels
                     subdir.Name.Equals("node_modules", StringComparison.Ordinal))
                     continue;
 
-                CallUIThread(() => ProgressDescription = $"Scanning {subdir.FullName}...");
+                ProgressDescription = $"Scanning {subdir.FullName}...";
 
                 var normalizedSelf = subdir.FullName.Replace('\\', '/').TrimEnd('/');
                 if (_managed.Contains(normalizedSelf))

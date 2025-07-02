@@ -47,7 +47,7 @@ namespace SourceGit.ViewModels
 
             if (!_repo.ConfirmCheckoutBranch())
             {
-                await CallUIThreadAsync(() => _repo.SetWatcherEnabled(true));
+                _repo.SetWatcherEnabled(true);
                 return true;
             }
 
@@ -64,7 +64,7 @@ namespace SourceGit.ViewModels
                     if (!succ)
                     {
                         log.Complete();
-                        await CallUIThreadAsync(() => _repo.SetWatcherEnabled(true));
+                        _repo.SetWatcherEnabled(true);
                         return false;
                     }
 
@@ -89,17 +89,14 @@ namespace SourceGit.ViewModels
 
             log.Complete();
 
-            await CallUIThreadAsync(() =>
-            {
-                ProgressDescription = "Waiting for branch updated...";
+            ProgressDescription = "Waiting for branch updated...";
 
-                var b = _repo.Branches.Find(x => x.IsLocal && x.Name == Branch);
-                if (b != null && _repo.HistoriesFilterMode == Models.FilterMode.Included)
-                    _repo.SetBranchFilterMode(b, Models.FilterMode.Included, true, false);
+            var b = _repo.Branches.Find(x => x.IsLocal && x.Name == Branch);
+            if (b != null && _repo.HistoriesFilterMode == Models.FilterMode.Included)
+                _repo.SetBranchFilterMode(b, Models.FilterMode.Included, true, false);
 
-                _repo.MarkBranchesDirtyManually();
-                _repo.SetWatcherEnabled(true);
-            });
+            _repo.MarkBranchesDirtyManually();
+            _repo.SetWatcherEnabled(true);
 
             Task.Delay(400).Wait();
             return succ;

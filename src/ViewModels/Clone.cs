@@ -145,23 +145,20 @@ namespace SourceGit.ViewModels
 
             log.Complete();
 
-            await CallUIThreadAsync(() =>
+            var node = Preferences.Instance.FindOrAddNodeByRepositoryPath(path, null, true);
+            var launcher = App.GetLauncher();
+            var page = null as LauncherPage;
+            foreach (var one in launcher.Pages)
             {
-                var node = Preferences.Instance.FindOrAddNodeByRepositoryPath(path, null, true);
-                var launcher = App.GetLauncher();
-                var page = null as LauncherPage;
-                foreach (var one in launcher.Pages)
+                if (one.Node.Id == _pageId)
                 {
-                    if (one.Node.Id == _pageId)
-                    {
-                        page = one;
-                        break;
-                    }
+                    page = one;
+                    break;
                 }
+            }
 
-                Welcome.Instance.Refresh();
-                launcher.OpenRepositoryInTab(node, page);
-            });
+            Welcome.Instance.Refresh();
+            launcher.OpenRepositoryInTab(node, page);
 
             return true;
         }

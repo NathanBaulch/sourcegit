@@ -101,33 +101,21 @@ namespace SourceGit.ViewModels
 
         public async Task ProcessPopupAsync()
         {
-            if (_popup is { InProgress: false } dump)
+            if (_popup is { InProgress: false } popup && popup.Check())
             {
-                if (!dump.Check())
-                    return;
-
-                dump.InProgress = true;
-                var task = dump.Sure();
-                var finished = false;
-                if (task != null)
+                popup.InProgress = true;
+                try
                 {
-                    try
-                    {
-                        finished = await task;
-                    }
-                    catch (Exception e)
-                    {
-                        App.LogException(e);
-                    }
-
-                    dump.InProgress = false;
-                    if (finished)
+                    if (await popup.Sure())
                         Popup = null;
                 }
-                else
+                catch (Exception e)
                 {
-                    dump.InProgress = false;
-                    Popup = null;
+                    App.LogException(e);
+                }
+                finally
+                {
+                    popup.InProgress = false;
                 }
             }
         }
