@@ -1,15 +1,17 @@
-﻿namespace SourceGit.Models
+﻿using System.Threading.Tasks;
+
+namespace SourceGit.Models
 {
     public interface IRepository
     {
         bool MayHaveSubmodules();
 
-        void RefreshBranches();
-        void RefreshWorktrees();
-        void RefreshTags();
-        void RefreshCommits();
-        void RefreshSubmodules();
-        void RefreshWorkingCopyChanges();
-        void RefreshStashes();
+        Task RefreshBranchesAsync();
+        Task RefreshWorktreesAsync();
+        Task RefreshTagsAsync();
+        Task RefreshCommitsAsync();
+        Task RefreshSubmodulesAsync();
+        Task RefreshWorkingCopyChangesAsync();
+        Task RefreshStashesAsync();
     }
 }

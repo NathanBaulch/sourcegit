@@ -63,7 +63,7 @@ namespace SourceGit.ViewModels
 
             var succ = await Commands.Branch.SetUpstreamAsync(_repo.FullPath, Local.Name, upstream.Replace("refs/remotes/", ""), log);
             if (succ)
-                _repo.RefreshBranches();
+                await _repo.RefreshBranchesAsync();
 
             log.Complete();
             return true;

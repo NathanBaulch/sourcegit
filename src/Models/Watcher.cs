@@ -125,44 +125,44 @@ namespace SourceGit.Models
                 if (_updateTags > 0)
                 {
                     _updateTags = 0;
-                    Task.Run(_repo.RefreshTags);
+                    Task.Run(_repo.RefreshTagsAsync);
                 }
 
                 if (_updateSubmodules > 0 || _repo.MayHaveSubmodules())
                 {
                     _updateSubmodules = 0;
-                    Task.Run(_repo.RefreshSubmodules);
+                    Task.Run(_repo.RefreshSubmodulesAsync);
                 }
 
-                Task.Run(_repo.RefreshBranches);
-                Task.Run(_repo.RefreshCommits);
-                Task.Run(_repo.RefreshWorkingCopyChanges);
-                Task.Run(_repo.RefreshWorktrees);
+                Task.Run(_repo.RefreshBranchesAsync);
+                Task.Run(_repo.RefreshCommitsAsync);
+                Task.Run(_repo.RefreshWorkingCopyChangesAsync);
+                Task.Run(_repo.RefreshWorktreesAsync);
             }
 
             if (_updateWC > 0 && now > _updateWC)
             {
                 _updateWC = 0;
-                Task.Run(_repo.RefreshWorkingCopyChanges);
+                Task.Run(_repo.RefreshWorkingCopyChangesAsync);
             }
 
             if (_updateSubmodules > 0 && now > _updateSubmodules)
             {
                 _updateSubmodules = 0;
-                Task.Run(_repo.RefreshSubmodules);
+                Task.Run(_repo.RefreshSubmodulesAsync);
             }
 
             if (_updateStashes > 0 && now > _updateStashes)
             {
                 _updateStashes = 0;
-                Task.Run(_repo.RefreshStashes);
+                Task.Run(_repo.RefreshStashesAsync);
             }
 
             if (_updateTags > 0 && now > _updateTags)
             {
                 _updateTags = 0;
-                Task.Run(_repo.RefreshTags);
-                Task.Run(_repo.RefreshCommits);
+                Task.Run(_repo.RefreshTagsAsync);
+                Task.Run(_repo.RefreshCommitsAsync);
             }
         }
 
